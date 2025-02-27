@@ -26,12 +26,42 @@ def get_db_connection():
   return conn, cursor
 
 
+def categorize_transaction(description):
+  """Categorizes a transaction based on its description using rules."""
+  description = description.lower(
+  )  # Convert to lowercase for case-insensitive matching
+
+  # --- Define your rules here ---
+  if "zomato" in description or "swiggy" in description:
+    return "Food Delivery"
+  if "amazon" in description or "flipkart" in description:
+    return "Online Shopping"
+  if "bigbasket" in description or "grofers" in description:
+    return "Groceries"
+  if "electricity bill" in description:
+    return "Utilities"
+  if "rent" in description:
+    return "Rent"
+  if "sbi atm" in description:
+    return "ATM Withdrawal"
+  if "salary" in description:
+    return "Salary"
+  if "emi" in description:
+    return "EMI"
+  # Add more rules as needed
+
+  # --- Default category if no rules match ---
+  return "Other"
+
+
 def input_transaction():
-  """Gets transaction details from the user and saves to the database."""
+  """Gets transaction details from the user, categorizes it, and saves to the database."""
   date = input("Enter transaction date (YYYY-MM-DD): ")
   amount = float(input("Enter transaction amount: "))
   description = input("Enter transaction description: ")
-  category = input("Enter transaction category: ")
+
+  # --- Categorize the transaction automatically ---
+  category = categorize_transaction(description)
 
   conn, cursor = get_db_connection()
   cursor.execute(
